@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <div class="player">
+    
+      <div class="header">
+        Music <span>Player</span>
+      </div>
+    
+      <div class="img">
+        <img src="https://p7.hiclipart.com/preview/228/53/109/phonograph-record-record-sleeve-compact-disc-album-cover-pvc-vector.jpg" id="thumb">
+      </div>
+      <div class="details">
+        <h3 id="title"></h3>
+        <p id="musician"></p>
+      </div>
+      <audio id="song">
+        <source src="" type="audio/mp3">
+        </source>
+      </audio>
+    
+      <div class="time">
+        <span id="start">2:28</span>
+        <span id="end">4:33</span>
+      </div>
+      <input type="range" id="progress" value="0">
+    
+      <div class="action">
+    
+        <button onclick="prevPlay()">
+          <i class="bx bx-skip-previous"></i>
+        </button>
+    
+        <button onclick="playPause()" class="play" id="play">
+          <i class="bx bx-play"></i>
+        </button>
+    
+        <button onclick="nextPlay()">
+          <i class="bx bx-skip-next"></i>
+        </button>
+    
+      </div>
+    
+    
+    
+    
+    
+    <style>
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 50%;
+      background-color:black;
+    }
+    
+    .player {
+      max-width: 300px;
+      max-height: 430px;
+      overflow: hidden;
+      border-radius: 30px;
+      padding: 20px;
+      box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.05);
+      position: relative;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(8.5px);
+      -webkit-backdrop-filter: blur(8.5px);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    
+    .header {
+      text-align: center;
+      margin: 0px auto;
+      padding: 5px;
+      border-bottom: 1px solid #f5f5f5;
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+    }
+    
+    .header span {
+      color: #ff688f;
+    }
+    
+    .img {
+      width: 160px;
+      height: 160px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px auto;
+      border-radius: 50%;
+      background: linear-gradient(120deg, #ffa17f, #ff688f);
+      overflow: hidden;
+      margin-top: 15px;
+    }
+    
+    .img img {
+      width: 150px;
+      height: 150px;
+      display: block;
+      margin: 20px auto;
+      border-radius: 50%;
+      object-fit: cover;
+      z-index: 9999;
+    }
+    
+    .img img.play {
+      animation: 15s rotate linear infinite;
+    }
+    
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    
+    .details {
+      text-align: center;
+    }
+    
+    .details p {
+      color: #777;
+      font-size: 15px;
+      margin-top: 5px;
+    }
+    
+    .action {
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .action button {
+      background:black;
+      box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.028);
+      border-radius: 50%;
+      padding: 10px;
+      font-size: 28px;
+      width: 60px;
+      height: 60px;
+      border: none;
+      outline: none;
+      margin: 10px;
+      border: 2px solid #f8f8f8;
+      cursor: pointer;
+      color: #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .action button:hover{
+        background:#ddd;
+        color: black;  
+    }
+    .action button.play {
+      background: linear-gradient(135deg, #ffa17f, #ff688f);
+      color: #fff;
+    }
+    
+    .time {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px auto 10px auto;
+      width: 90%;
+      color: #777;
+    }
+    
+    #progress {
+      margin: 0px auto;
+      display: block;
+      width: 90%;
+      appearance: none;
+      height: 6px;
+      background: #f7f7f7;
+    }
+    
+    #progress::-webkit-slider-thumb {
+      background: red;
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      background: linear-gradient(135deg, #ffa17f, #ff688f);
+      transition: 0.2s ease-in-out;
+    }
+    
+    </style>
+    
+    
+    
+    <script>
+    
+    var progress = document.querySelector("#progress");
+    var song = document.querySelector("#song");
+    var playBtn = document.querySelector("#play i");
+    var index = 1;
+    var img = document.querySelector(".img img");
+    
+    var title = document.querySelector("#title");
+    var thumb = document.querySelector("#thumb");
+    var artist = document.querySelector("#musician");
+    
+    var start = document.querySelector("#start");
+    var end = document.querySelector("#end");
+ 
+   song.src=`https://cdn.jsdelivr.net/gh/o2755523/phonk-api/song/Phonk%20music(${index}).mp3`;
+    title.innerHTML = `Phonk music(${index})`;
+    artist.innerHTML = 'APR';
+   
+    song.onloadedmetadata = function () {
+      progress.max = song.duration;
+      progress.value = song.currentTime;
+    
+      setInterval(() => {
+        var min = Math.floor(song.duration / 60);
+        var sec = Math.floor(song.duration % 60);
+    
+        var curMin = Math.floor(song.currentTime / 60);
+        var curSec = Math.floor(song.currentTime % 60);
+    
+        if (sec < 10) {
+          sec = "0" + sec;
+        }
+        if (curSec < 10) {
+          curSec = "0" + curSec;
+        }
+        if (min < 10) {
+          min = "0" + min;
+        }
+        if (curMin < 10) {
+          curMin = "0" + curMin;
+        }
+    
+        end.innerHTML = min + ":" + sec;
+        start.innerHTML = curMin + ":" + curSec;
+      }, 1000);
+    };
+    
+    song.pause();
+        playBtn.classList.add("bx-play");
+
+    function playPause() {
+      if (playBtn.classList.contains("bx-pause")) {
+        song.pause();
+        playBtn.classList.remove("bx-pause");
+        playBtn.classList.add("bx-play");
+        img.classList.remove("play");
+      } else {
+        song.play();
+        playBtn.classList.remove("bx-play");
+        playBtn.classList.add("bx-pause");
+        img.classList.add("play");
+      }
+    }
+    
+    if (song.play()) {
+      setInterval(() => {
+        progress.value = song.currentTime;
+        if (song.currentTime == song.duration) {
+          nextPlay();
+        }
+      }, 1000);
+    }
+    
+    progress.onchange = function () {
+      song.play();
+      song.currentTime = progress.value;
+      playBtn.classList.remove("bx-play");
+      playBtn.classList.add("bx-pause");
+      img.classList.add("play");
+    };
+    
+    function nextPlay() {
+      index = index + 1;
+      if (index > 96) {
+        index = 1;
+        song.src = `https://cdn.jsdelivr.net/gh/o2755523/phonk-api/song/Phonk%20music(${index}).mp3`;
+        title.innerHTML = `Phonk music(${index})`;
+       
+        song.play();
+      } else {
+        song.src = `https://cdn.jsdelivr.net/gh/o2755523/phonk-api/song/Phonk%20music(${index}).mp3`;
+        title.innerHTML = `Phonk music(${index})`;
+       
+        song.play();
+      }
+    }
+    
+    function prevPlay() {
+      index = index - 1;
+      if (index < 1) {
+        index = songs.length;
+        song.src = `https://cdn.jsdelivr.net/gh/o2755523/phonk-api/song/Phonk%20music(${index}).mp3`;
+        title.innerHTML = `Phonk music(${index})`;
+       
+        song.play();
+      } else {
+        song.src = `https://cdn.jsdelivr.net/gh/o2755523/phonk-api/song/Phonk%20music(${index}).mp3`;
+        title.innerHTML = `Phonk music(${index})`;
+       
+        song.play();
+      }
+    }
+    
+    </script>
+ 
+</body>
+</html>
